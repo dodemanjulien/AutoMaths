@@ -5,6 +5,15 @@ Toutes les modifications notables apportées au projet AutoMaths seront document
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.1] - 2026-10-10
+
+### Corrigé
+- **Pythagore (CAP C2 et BAC 2nde)** : les mesures des côtés sont de nouveau visibles sur la figure du triangle (texte clair sur fond sombre, « ? » en jaune ; texte foncé à l'impression).
+- **index.html** : charge tous les scripts (images des thèmes, rappels de cours, mini-jeux) comme la version standalone.
+
+### Ajouté
+- **Mise en ligne sur GitHub Pages** : https://dodemanjulien.github.io/AutoMaths/ (fonctionne sur iPhone, contrairement à l'ouverture du fichier HTML en aperçu).
+
 ## [1.4.0] - 2026-06-14
 
 ### Ajouté
