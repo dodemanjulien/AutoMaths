@@ -1289,6 +1289,7 @@ body {
     box-shadow: none !important; padding: 0;
   }
   .step-section.active { display: block; }
+  .pyth-lbl { fill: #0f172a !important; }
   
   #step-exercises .theme-banner {
     background: none !important; border: 1px solid #ccc; color: #000;

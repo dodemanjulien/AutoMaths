@@ -216,6 +216,9 @@ function genParallelPerpFig(){
 function genSvgPythagoras(valA, valB, valC, missingType) {
   var svg = '<svg width="100%" height="auto" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" style="display:block; margin: 1rem auto; max-width:160px; filter:drop-shadow(0 4px 6px rgba(0,0,0,0.05));">';
   var stroke = '#3b82f6', fill = 'rgba(59, 130, 246, 0.15)', sw = '3', red = '#ef4444';
+  // Couleurs des mesures : claires pour rester lisibles sur le fond sombre de l'appli
+  var txt = '#f1f5f9', txtMissing = '#fbbf24';
+  function lblColor(t) { return (missingType === t) ? txtMissing : txt; }
   
   // Triangle rectangle
   svg += '<polygon points="30,130 130,130 30,30" fill="'+fill+'" stroke="'+stroke+'" stroke-width="'+sw+'"/>';
@@ -227,11 +230,11 @@ function genSvgPythagoras(valA, valB, valC, missingType) {
   var lblB = (missingType === 'b') ? '?' : valB;
   var lblC = (missingType === 'c') ? '?' : valC;
   
-  svg += '<text x="15" y="85" fill="#0f172a" font-size="16" font-family="sans-serif" font-weight="bold" text-anchor="middle">'+lblA+'</text>';
-  svg += '<text x="80" y="150" fill="#0f172a" font-size="16" font-family="sans-serif" font-weight="bold" text-anchor="middle">'+lblB+'</text>';
+  svg += '<text class="pyth-lbl" x="15" y="85" fill="'+lblColor('a')+'" font-size="16" font-family="sans-serif" font-weight="bold" text-anchor="middle">'+lblA+'</text>';
+  svg += '<text class="pyth-lbl" x="80" y="150" fill="'+lblColor('b')+'" font-size="16" font-family="sans-serif" font-weight="bold" text-anchor="middle">'+lblB+'</text>';
   
   // Hypoténuse placée au centre du côté oblique
-  svg += '<text x="95" y="75" fill="#0f172a" font-size="16" font-family="sans-serif" font-weight="bold" text-anchor="middle">'+lblC+'</text>';
+  svg += '<text class="pyth-lbl" x="95" y="75" fill="'+lblColor('c')+'" font-size="16" font-family="sans-serif" font-weight="bold" text-anchor="middle">'+lblC+'</text>';
   
   svg += '</svg>';
   return svg;
