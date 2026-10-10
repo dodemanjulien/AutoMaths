@@ -220,7 +220,7 @@ var MiniGameEngine=(function(){
     }
     ansDiv.innerHTML=
       '<div class="mg-row">'+
-        '<input class="mg-input" id="mg-input" type="text" autocomplete="off" placeholder="Ta réponse\u2026" inputmode="none">'+
+        '<input class="mg-input" id="mg-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Ta réponse\u2026" inputmode="'+(S.keyboardOpen?'none':'text')+'">'+
         '<button class="mg-btn-kb'+(S.keyboardOpen?' active':'')+'" id="mg-btn-kb" type="button" title="Afficher/Masquer le clavier virtuel">⌨️</button>'+
         '<button class="mg-btn" id="mg-btn">\u2713</button>'+
       '</div>'+
@@ -285,6 +285,9 @@ var MiniGameEngine=(function(){
           '<button type="button" class="mg-kb-key mg-kb-unit" data-val=" L">L</button>'+
           '<button type="button" class="mg-kb-key mg-kb-unit" data-val=" km/h">km/h</button>'+
         '</div>'+
+        '<div class="mg-kb-row">'+
+          '<button type="button" class="mg-kb-key mg-kb-native" data-val="__native" title="Passer au clavier du téléphone">\ud83d\udd24 ABC \u2013 clavier du téléphone</button>'+
+        '</div>'+
       '</div>';
     var inp=$i('mg-input'),btn=$i('mg-btn');
     // Détecter l'unité de la bonne réponse
@@ -314,13 +317,7 @@ var MiniGameEngine=(function(){
     var kbBtn=$i('mg-btn-kb');
     if(kbBtn){
       kbBtn.addEventListener('click',function(){
-        S.keyboardOpen = !S.keyboardOpen;
-        var kb=$i('mg-keyboard');
-        if(kb) kb.style.display = S.keyboardOpen ? 'flex' : 'none';
-        kbBtn.classList.toggle('active', S.keyboardOpen);
-        var target=document.activeElement;
-        if(!target||(!target.classList.contains('mg-input')&&!target.classList.contains('mg-frac-field')))target=$i('mg-input')||$i('mg-frac-num');
-        if(target) target.focus();
+        setVirtualKeyboard(!S.keyboardOpen);
       });
     }
 
@@ -337,6 +334,11 @@ var MiniGameEngine=(function(){
           toggleFracMode();
           return;
         }
+        /* ── Bouton ABC : passer au clavier du téléphone ── */
+        if(val==='__native'){
+          setVirtualKeyboard(false);
+          return;
+        }
         /* ── Champ actif (input normal ou numérateur/dénominateur) ── */
         var target=document.activeElement;
         if(!target||(!target.classList.contains('mg-input')&&!target.classList.contains('mg-frac-field')))target=$i('mg-input')||$i('mg-frac-num');
@@ -350,6 +352,28 @@ var MiniGameEngine=(function(){
         }
         target.focus();
       });
+    }
+  }
+
+  /* ── Clavier virtuel ↔ clavier du téléphone ──
+     open = true  : clavier virtuel affiché, clavier du téléphone masqué (inputmode none)
+     open = false : clavier virtuel masqué, le clavier du téléphone s'ouvre (lettres) */
+  function setVirtualKeyboard(open){
+    S.keyboardOpen = open;
+    var kb=$i('mg-keyboard');
+    if(kb) kb.style.display = open ? 'flex' : 'none';
+    var kbBtn=$i('mg-btn-kb');
+    if(kbBtn) kbBtn.classList.toggle('active', open);
+    ['mg-input','mg-frac-num','mg-frac-den'].forEach(function(id){
+      var f=$i(id); if(f) f.setAttribute('inputmode', open ? 'none' : 'text');
+    });
+    var target=document.activeElement;
+    if(!target||(!target.classList.contains('mg-input')&&!target.classList.contains('mg-frac-field')))target=$i('mg-input')||$i('mg-frac-num');
+    if(target&&target.offsetParent===null)target=$i('mg-frac-num')||target;
+    if(target&&!target.disabled){
+      // iPhone et Android ne relisent inputmode qu'au moment du focus : on refocalise
+      target.blur();
+      target.focus();
     }
   }
 
@@ -375,9 +399,9 @@ var MiniGameEngine=(function(){
       fw.id='mg-frac-wrap';fw.className='mg-frac-wrap';
       fw.innerHTML=
         '<div class="mg-frac-input">'+
-          '<input class="mg-frac-field mg-frac-field-num" id="mg-frac-num" type="text" inputmode="none" placeholder="Num." autocomplete="off" value="'+(parts?parts[1]:'')+'">'+
+          '<input class="mg-frac-field mg-frac-field-num" id="mg-frac-num" type="text" inputmode="'+(S.keyboardOpen?'none':'text')+'" placeholder="Num." autocomplete="off" value="'+(parts?parts[1]:'')+'">'+
           '<div class="mg-frac-input-bar"></div>'+
-          '<input class="mg-frac-field mg-frac-field-den" id="mg-frac-den" type="text" inputmode="none" placeholder="Dén." autocomplete="off" value="'+(parts?parts[2]:'')+'">'+
+          '<input class="mg-frac-field mg-frac-field-den" id="mg-frac-den" type="text" inputmode="'+(S.keyboardOpen?'none':'text')+'" placeholder="Dén." autocomplete="off" value="'+(parts?parts[2]:'')+'">'+
         '</div>';
       var row=ansDiv.querySelector('.mg-row');
       if(row)row.insertBefore(fw,row.querySelector('.mg-btn'));

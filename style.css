@@ -1047,6 +1047,8 @@ body {
 .mg-kb-frac { color: #f9a8d4; border-color: rgba(249,168,212,0.3); background: rgba(249,168,212,0.08); width: auto !important; min-width: 44px; }
 .mg-kb-frac:hover { background: rgba(249,168,212,0.18); }
 .mg-kb-frac-active { background: rgba(249,168,212,0.3) !important; border-color: #f9a8d4 !important; color: #fff !important; box-shadow: 0 0 8px rgba(249,168,212,0.5); }
+.mg-kb-native { width: 100% !important; max-width: none !important; font-size: 14px; font-weight: 600; color: #fde68a; border-color: rgba(253,230,138,0.3); background: rgba(253,230,138,0.08); }
+.mg-kb-native:hover { background: rgba(253,230,138,0.18); }
 
 /* Saisie fraction (double champ) */
 .mg-frac-wrap {

@@ -5,6 +5,16 @@ Toutes les modifications notables apportées au projet AutoMaths seront document
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.5] - 2026-10-10
+
+### Ajouté
+- **Bouton « ABC – clavier du téléphone »** en bas du clavier virtuel : il masque le clavier virtuel et ouvre le clavier du téléphone pour écrire des lettres. Le bouton ⌨️ ramène le clavier virtuel. Le choix est conservé d'une question à l'autre.
+
+### Corrigé
+- Quand le clavier virtuel était masqué avec ⌨️, le clavier du téléphone ne s'ouvrait pas non plus : il n'y avait plus aucun moyen d'écrire sur téléphone.
+- Pas de correction automatique ni de majuscule automatique dans le champ réponse.
+- Badge de version du pied de page mis à jour.
+
 ## [1.4.4] - 2026-10-10
 
 ### Corrigé
