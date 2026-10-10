@@ -5,6 +5,12 @@ Toutes les modifications notables apportées au projet AutoMaths seront document
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.3] - 2026-10-10
+
+### Amélioré
+- **Résultat dans l'unité adaptée (BAC 2nde)** : 46 situations au lieu de 6 (km, m, cm, mm, kg, g, mg, L, cL, mL, km/h, m/s, m², cm²).
+- **Pas de répétition** : une même question ne revient pas avant 3 parties (mémorisé dans le navigateur de l'élève, fonction `pickFresh` réutilisable pour d'autres automatismes).
+
 ## [1.4.2] - 2026-10-10
 
 ### Corrigé

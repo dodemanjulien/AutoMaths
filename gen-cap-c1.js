@@ -27,6 +27,25 @@ function checkStr(val,expected){
 function makeCheckNum(exp,tol){return function(v){return checkNum(v,exp,tol!==undefined?tol:0.01);};}
 function makeCheckStr(exp){return function(v){return checkStr(v,exp);};}
 
+/* Tirage sans répétition entre parties : choisit n éléments du pool en évitant
+   ceux tirés lors des `memory` derniers tirages (mémorisés dans le navigateur).
+   Ex. memory = 30 avec n = 10 → une question ne revient pas avant 3 parties. */
+function pickFresh(pool, n, storageKey, memory) {
+  var key = 'automaths-recent-' + storageKey, recent = [];
+  try { recent = JSON.parse(localStorage.getItem(key) || '[]'); } catch (e) { recent = []; }
+  if (!Array.isArray(recent)) recent = [];
+  function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = rnd(0, i), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  var idx = pool.map(function(_, i) { return i; });
+  var fresh = shuffle(idx.filter(function(i) { return recent.indexOf(i) === -1; }));
+  // Si le pool ne suffit pas, on complète avec les plus anciens tirages
+  var old = recent.filter(function(i) { return i < pool.length; });
+  var chosen = fresh.slice(0, n);
+  for (var k = 0; chosen.length < n && k < old.length; k++) if (chosen.indexOf(old[k]) === -1) chosen.push(old[k]);
+  recent = recent.filter(function(i) { return chosen.indexOf(i) === -1; }).concat(chosen).slice(-memory);
+  try { localStorage.setItem(key, JSON.stringify(recent)); } catch (e) {}
+  return shuffle(chosen).map(function(i) { return pool[i]; });
+}
+
 /* Anti-doublons : garantit 10 exercices uniques (par question) */
 function dedupe(genFn, maxAttempts) {
   maxAttempts = maxAttempts || 200;

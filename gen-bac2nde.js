@@ -287,19 +287,75 @@ function genPythagore(){
 
 function genUnitResult(){
   var items=[
+    // km
     {q:'Distance Paris-Lyon ≈ 400 ___',a:'km'},
+    {q:'Longueur d\'un marathon ≈ 42 ___',a:'km'},
+    {q:'Distance Terre-Lune ≈ 384 000 ___',a:'km'},
+    {q:'Trajet en bus de la maison au lycée ≈ 8 ___',a:'km'},
+    {q:'Longueur de la Loire ≈ 1 000 ___',a:'km'},
+    // m
+    {q:'Hauteur de la tour Eiffel ≈ 330 ___',a:'m'},
+    {q:'Longueur d\'un terrain de football ≈ 100 ___',a:'m'},
+    {q:'Hauteur d\'un immeuble de 5 étages ≈ 15 ___',a:'m'},
+    {q:'Longueur d\'une piscine olympique = 50 ___',a:'m'},
+    {q:'Taille d\'un adulte ≈ 1,75 ___',a:'m'},
+    // cm
     {q:'Hauteur d\'une porte ≈ 200 ___',a:'cm'},
+    {q:'Longueur d\'un stylo ≈ 14 ___',a:'cm'},
+    {q:'Largeur d\'une feuille A4 ≈ 21 ___',a:'cm'},
+    {q:'Longueur d\'un smartphone ≈ 15 ___',a:'cm'},
+    // mm
+    {q:'Épaisseur d\'une carte bancaire ≈ 0,8 ___',a:'mm'},
+    {q:'Diamètre d\'une pièce de 1 € ≈ 23 ___',a:'mm'},
+    {q:'Longueur d\'une fourmi ≈ 5 ___',a:'mm'},
+    // kg
+    {q:'Masse d\'un adulte ≈ 70 ___',a:'kg'},
+    {q:'Masse d\'un sac de ciment ≈ 25 ___',a:'kg'},
+    {q:'Masse d\'une voiture ≈ 1 200 ___',a:'kg'},
+    {q:'Masse d\'un pack de 6 bouteilles d\'eau ≈ 9 ___',a:'kg'},
+    // g
     {q:'Masse d\'un stylo ≈ 10 ___',a:'g'},
+    {q:'Masse d\'une tablette de chocolat ≈ 100 ___',a:'g'},
+    {q:'Masse d\'une pomme ≈ 150 ___',a:'g'},
+    {q:'Masse d\'un smartphone ≈ 180 ___',a:'g'},
+    // mg
+    {q:'Paracétamol dans un comprimé = 500 ___',a:'mg'},
+    {q:'Masse d\'un moustique ≈ 2 ___',a:'mg'},
+    // L
     {q:'Contenance d\'une bouteille ≈ 0,5 ___',a:'L'},
+    {q:'Eau d\'une baignoire remplie ≈ 150 ___',a:'L'},
+    {q:'Réservoir d\'essence d\'une voiture ≈ 50 ___',a:'L'},
+    {q:'Contenance d\'un seau ≈ 10 ___',a:'L'},
+    // cL
+    {q:'Contenance d\'une canette de soda = 33 ___',a:'cL'},
+    {q:'Contenance d\'un verre d\'eau ≈ 20 ___',a:'cL'},
+    // mL
+    {q:'Contenance d\'une cuillère à café ≈ 5 ___',a:'mL'},
+    {q:'Contenance d\'un flacon de parfum ≈ 50 ___',a:'mL'},
+    {q:'Contenance d\'une seringue ≈ 10 ___',a:'mL'},
+    // vitesses
     {q:'Vitesse autoroute ≈ 130 ___',a:'km/h'},
+    {q:'Vitesse d\'un piéton ≈ 5 ___',a:'km/h'},
+    {q:'Vitesse d\'un TGV ≈ 300 ___',a:'km/h'},
+    {q:'Vitesse maximale en ville = 50 ___',a:'km/h'},
+    {q:'Vitesse du son dans l\'air ≈ 340 ___',a:'m/s'},
+    // aires
     {q:'Surface d\'une pièce ≈ 20 ___',a:'m²'},
+    {q:'Surface d\'un terrain de football ≈ 7 000 ___',a:'m²'},
+    {q:'Surface d\'un appartement T3 ≈ 65 ___',a:'m²'},
+    {q:'Surface d\'une carte bancaire ≈ 46 ___',a:'cm²'},
+    {q:'Surface d\'un timbre ≈ 6 ___',a:'cm²'},
   ];
-  var exs=[];
-  for(var i=0;i<10;i++){
-    var item=pick(items);
-    exs.push({question:item.q,answer:item.a,explanation:item.a,check:makeCheckStr(item.a)});
-  }
-  return exs;
+  // Une question ne revient pas avant 3 parties (30 dernières mémorisées)
+  return pickFresh(items, 10, 'b2-20', 30).map(function(item){
+    return {question:item.q,answer:item.a,explanation:item.a,check:makeCheckUnit(item.a)};
+  });
+}
+
+/* Compare deux unités : casse et espaces ignorés, m2 = m², cm3 = cm³ */
+function makeCheckUnit(exp){
+  function norm(u){ return String(u).toLowerCase().replace(/\s/g,'').replace(/2$/,'²').replace(/3$/,'³'); }
+  return function(v){ return norm(v)===norm(exp); };
 }
 
 function genAreaCalc2nde(){
