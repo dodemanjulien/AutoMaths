@@ -155,13 +155,84 @@ function genEquation2nde(){
   return exs;
 }
 
+/* Repère orthonormé gradué de -7 à 7 avec les points demandés (fond blanc,
+   comme genSvgFunctionGraph). pts = [{x, y, label}] */
+function genSvgRepere(pts) {
+  var R = 7, cell = 20, size = (2 * R + 2) * cell, c = size / 2;
+  function X(v) { return c + v * cell; }
+  function Y(v) { return c - v * cell; }
+  var svg = '<svg width="100%" height="auto" viewBox="0 0 ' + size + ' ' + size + '" xmlns="http://www.w3.org/2000/svg" style="background:#ffffff; border:1px solid #cbd5e1; display:block; margin: 0.5rem auto; border-radius:4px; max-width:340px;">';
+  // Quadrillage
+  for (var k = -R; k <= R; k++) {
+    svg += '<line x1="' + X(k) + '" y1="' + Y(-R) + '" x2="' + X(k) + '" y2="' + Y(R) + '" stroke="#e2e8f0" stroke-width="1"/>';
+    svg += '<line x1="' + X(-R) + '" y1="' + Y(k) + '" x2="' + X(R) + '" y2="' + Y(k) + '" stroke="#e2e8f0" stroke-width="1"/>';
+  }
+  // Axes et flèches
+  svg += '<line x1="' + X(-R) + '" y1="' + c + '" x2="' + (X(R) + 12) + '" y2="' + c + '" stroke="#475569" stroke-width="2"/>';
+  svg += '<line x1="' + c + '" y1="' + Y(-R) + '" x2="' + c + '" y2="' + (Y(R) - 12) + '" stroke="#475569" stroke-width="2"/>';
+  svg += '<polygon points="' + (X(R) + 18) + ',' + c + ' ' + (X(R) + 8) + ',' + (c - 4) + ' ' + (X(R) + 8) + ',' + (c + 4) + '" fill="#475569"/>';
+  svg += '<polygon points="' + c + ',' + (Y(R) - 18) + ' ' + (c - 4) + ',' + (Y(R) - 8) + ' ' + (c + 4) + ',' + (Y(R) - 8) + '" fill="#475569"/>';
+  svg += '<text x="' + (X(R) + 6) + '" y="' + (c - 8) + '" fill="#475569" font-size="12" font-family="sans-serif" font-style="italic">x</text>';
+  svg += '<text x="' + (c + 8) + '" y="' + (Y(R) - 6) + '" fill="#475569" font-size="12" font-family="sans-serif" font-style="italic">y</text>';
+  // Graduations chiffrées
+  for (var g = -R; g <= R; g++) {
+    if (g === 0) continue;
+    svg += '<line x1="' + X(g) + '" y1="' + (c - 3) + '" x2="' + X(g) + '" y2="' + (c + 3) + '" stroke="#475569" stroke-width="1.5"/>';
+    svg += '<text x="' + X(g) + '" y="' + (c + 14) + '" fill="#64748b" font-size="9" font-family="sans-serif" text-anchor="middle">' + g + '</text>';
+    svg += '<line x1="' + (c - 3) + '" y1="' + Y(g) + '" x2="' + (c + 3) + '" y2="' + Y(g) + '" stroke="#475569" stroke-width="1.5"/>';
+    svg += '<text x="' + (c - 6) + '" y="' + (Y(g) + 3) + '" fill="#64748b" font-size="9" font-family="sans-serif" text-anchor="end">' + g + '</text>';
+  }
+  svg += '<text x="' + (c - 3) + '" y="' + (c + 13) + '" fill="#475569" font-size="10" font-family="sans-serif" font-weight="bold" text-anchor="end">O</text>';
+  // Points (croix + nom)
+  (pts || []).forEach(function(p) {
+    var px = X(p.x), py = Y(p.y);
+    svg += '<line x1="' + (px - 5) + '" y1="' + (py - 5) + '" x2="' + (px + 5) + '" y2="' + (py + 5) + '" stroke="#dc2626" stroke-width="2.5"/>';
+    svg += '<line x1="' + (px - 5) + '" y1="' + (py + 5) + '" x2="' + (px + 5) + '" y2="' + (py - 5) + '" stroke="#dc2626" stroke-width="2.5"/>';
+    svg += '<text x="' + (px + 6) + '" y="' + (py - 6) + '" fill="#dc2626" font-size="14" font-family="sans-serif" font-weight="bold">' + p.label + '</text>';
+  });
+  return svg + '</svg>';
+}
+
+/* Coordonnées « (x ; y) » : parenthèses et espaces facultatifs, ; ou , comme séparateur */
+function makeCheckCoords(x, y) {
+  return function(v) {
+    var m = String(v).replace(/−/g, '-').replace(/[()\s]/g, '').match(/^(-?\d+)[;.,](-?\d+)$/);
+    return !!m && parseInt(m[1], 10) === x && parseInt(m[2], 10) === y;
+  };
+}
+
 function genReperage2nde(){
-  var exs=[];
-  for(var i=0;i<10;i++){
-    var x=rnd(-6,6)||1,y=rnd(-6,6)||1,t=rnd(0,1),q,ans;
-    if(t===0){q='Point A('+x+' ; '+y+'). Abscisse = ?';ans=String(x);}
-    else{q='Point A('+x+' ; '+y+'). Ordonnée = ?';ans=String(y);}
-    exs.push({question:q,answer:ans,explanation:ans,check:makeCheckNum(parseFloat(ans))});
+  function coord() { var v = 0; while (v === 0) v = rnd(-6, 6); return v; }
+  function fmt(x, y) { return '(' + x + ' ; ' + y + ')'; }
+  var intro = '<div style="text-align:center;">';
+  var exs = [];
+  for (var i = 0; i < 10; i++) {
+    // |x| ≠ |y| pour que l'inversion abscisse/ordonnée soit un vrai piège
+    var x = coord(), y = coord();
+    while (Math.abs(x) === Math.abs(y)) y = coord();
+    var t = rnd(0, 3), q, ans, choices, check;
+    if (t === 0) {
+      q = intro + 'Lis l\'<b>abscisse</b> du point A.</div>' + genSvgRepere([{ x: x, y: y, label: 'A' }]);
+      ans = String(x); choices = [String(x), String(y), String(-x)];
+      check = makeCheckNum(x, 0);
+    } else if (t === 1) {
+      q = intro + 'Lis l\'<b>ordonnée</b> du point A.</div>' + genSvgRepere([{ x: x, y: y, label: 'A' }]);
+      ans = String(y); choices = [String(y), String(x), String(-y)];
+      check = makeCheckNum(y, 0);
+    } else if (t === 2) {
+      q = intro + 'Lis les <b>coordonnées</b> du point A.<br><small>Écris-les sous la forme (x ; y)</small></div>' + genSvgRepere([{ x: x, y: y, label: 'A' }]);
+      ans = fmt(x, y); choices = [fmt(x, y), fmt(y, x), fmt(-x, y)];
+      check = makeCheckCoords(x, y);
+    } else {
+      // Trois points : le bon, l'inversé (y ; x) et un symétrique.
+      // On demande les coordonnées d'un point nommé (saisie possible au clavier virtuel).
+      var labels = ['A', 'B', 'C'].sort(function() { return Math.random() - 0.5; });
+      var pts = [{ x: x, y: y, label: labels[0] }, { x: y, y: x, label: labels[1] }, { x: -x, y: y, label: labels[2] }];
+      q = intro + 'Lis les <b>coordonnées</b> du point <b>' + labels[0] + '</b>.<br><small>Écris-les sous la forme (x ; y)</small></div>' + genSvgRepere(pts);
+      ans = fmt(x, y); choices = [fmt(x, y), fmt(y, x), fmt(-x, y)];
+      check = makeCheckCoords(x, y);
+    }
+    exs.push({ question: q, answer: ans, explanation: ans, check: check, choices: choices });
   }
   return exs;
 }

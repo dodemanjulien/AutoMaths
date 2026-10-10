@@ -5,6 +5,12 @@ Toutes les modifications notables apportées au projet AutoMaths seront document
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.4] - 2026-10-10
+
+### Corrigé
+- **Repérage dans le plan (BAC 2nde)** : les questions s'appuient maintenant sur un vrai repère gradué (de −7 à 7) avec le ou les points placés. Quatre types : lire l'abscisse, lire l'ordonnée, lire les coordonnées d'un point, lire les coordonnées d'un point parmi trois (pièges : x et y inversés, point symétrique). Les coordonnées s'écrivent (x ; y), avec ou sans parenthèses.
+- **Rappel de cours** : ajout de la règle « abscisse sur l'axe horizontal, ordonnée sur l'axe vertical ».
+
 ## [1.4.3] - 2026-10-10
 
 ### Amélioré

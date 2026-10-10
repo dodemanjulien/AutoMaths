@@ -343,6 +343,7 @@ window.LESSON_HINTS = {
     title: 'Repérage dans le plan',
     rules: [
       'Un point M a des coordonnées <strong>(x ; y)</strong> dans un repère.',
+      'On lit d\'abord l\'<strong>abscisse x</strong> sur l\'axe horizontal, puis l\'<strong>ordonnée y</strong> sur l\'axe vertical.',
       'Milieu AB = ((xA+xB)/2 ; (yA+yB)/2)',
     ],
     examples: ['A(2;4) B(6;2) → Milieu = (4;3)']
