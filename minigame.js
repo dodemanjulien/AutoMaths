@@ -32,7 +32,7 @@ var MiniGameEngine=(function(){
   var UNIT_RE=/^([\d\s.,\/\-+×÷²³⁴√π]*?)\s*(cm²|m²|km\/h|m\/s|cm2|m2|cm|km|dm|mm|m|kg|mg|d[Ll]|c[Ll]|m[Ll]|[Ll]|g|€|%|°C|°)\.?\s*$/i;
   function splitUnit(s){var m=String(s).trim().match(UNIT_RE);return m?{num:m[1].trim(),unit:m[2].trim().toLowerCase()}:{num:String(s).trim(),unit:null};}
   // Normalise une unité pour comparaison (m2↔m², l↔L, etc.)
-  function normUnit(u){return (u||'').toLowerCase().replace('m2','m²').replace('cm2','m²').replace('cm²','m²').replace('l','l');}
+  function normUnit(u){return (u||'').toLowerCase().replace(/2$/,'²').replace(/3$/,'³');}
   function chk(ex,val){
     var correct=splitUnit(String(ex.answer));
     if(correct.unit){
@@ -41,6 +41,8 @@ var MiniGameEngine=(function(){
       if(!student.unit||normUnit(student.unit)!==normUnit(correct.unit))return false;
       // Unité ok — vérifier la partie numérique
       var n1=normStr(student.num),n2=normStr(correct.num);
+      // Réponse attendue = une unité seule (ex : « km ») : l'unité suffit
+      if(n2==='')return n1==='';
       if(n1!==''&&n1===n2)return true;
       var p1=parseVal(student.num),p2=parseVal(correct.num);
       return !isNaN(p1)&&!isNaN(p2)&&Math.abs(p1-p2)<=Math.max(0.01,Math.abs(p2)*0.005);

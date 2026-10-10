@@ -5,6 +5,12 @@ Toutes les modifications notables apportées au projet AutoMaths seront document
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.2] - 2026-10-10
+
+### Corrigé
+- **Mini-jeux, réponses « unité seule »** (ex : *Résultat dans l'unité adaptée*, BAC 2nde) : une bonne réponse comme « km » ou « m² » était comptée fausse. Elle est maintenant acceptée (QCM et saisie libre, majuscules indifférentes, m2 = m²).
+- **Unités d'aire** : « cm² » n'est plus accepté à la place de « m² » (et inversement).
+
 ## [1.4.1] - 2026-10-10
 
 ### Corrigé
