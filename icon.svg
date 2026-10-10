@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#1e1b4b" rx="112" />
+  <text x="256" y="280" font-family="sans-serif" font-size="220" font-weight="bold" fill="#f59e0b" text-anchor="middle" dominant-baseline="central">Auto</text>
+  <text x="256" y="420" font-family="sans-serif" font-size="120" font-weight="bold" fill="white" text-anchor="middle" dominant-baseline="central">Maths</text>
+</svg>

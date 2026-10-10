@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AutoMaths – exercices d'automatismes mathématiques pour lycée professionnel (CAP et BAC PRO). Entraîne-toi sur plus de 75 automatismes." />
+  <title>AutoMaths – Lycée Professionnel</title>
+  <meta name="theme-color" content="#1e1b4b" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="icon.svg" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- MODAL PSEUDO (première visite) -->
+<div class="pseudo-overlay" id="pseudo-overlay" style="display:none">
+  <div class="pseudo-modal">
+    <div class="pseudo-title">Création du Profil</div>
+    <div class="pseudo-sub">Choisis ta classe et ton pseudo</div>
+    
+    <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:12px; margin: 20px 0;" id="avatar-selector">
+      <!-- Peuplé dynamiquement par initApp() via GamificationEngine.getAvatarKeys() -->
+    </div>
+
+    <div class="pseudo-locked-note">🔒 D'autres classes se débloquent dans la Boutique 💎</div>
+
+    <input class="pseudo-input" id="pseudo-input" type="text" maxlength="15" placeholder="Ton pseudo…" autocomplete="off" />
+    <button class="btn-primary" id="pseudo-confirm" style="width:100%">Entrer dans l'Arène 🚀</button>
+  </div>
+</div>
+
+<!-- BADGE COMBO (flottant) -->
+<div class="combo-badge" id="combo-badge">🔥 Combo ×<span id="combo-count">2</span></div>
+
+<header class="app-header">
+  <div class="header-inner">
+    <button class="logo-home-btn" id="logo-home-btn" aria-label="Retour à l'accueil" tabindex="0">
+      <span class="logo-icon">∑</span>
+      <span class="logo-text">Auto<strong>Maths</strong></span>
+    </button>
+    <nav class="breadcrumb" id="breadcrumb" aria-label="Navigation"></nav>
+    <!-- XP Zone -->
+    <div class="xp-zone" id="xp-zone">
+      <div class="level-badge" id="level-badge">🌱 Apprenti</div>
+      <div class="xp-bar-wrap" title="Progression XP">
+        <div class="xp-bar-fill" id="xp-bar-fill" style="width:0%"></div>
+      </div>
+      <span class="xp-total" id="xp-total">0 XP</span>
+      <button class="btn-reset-xp" id="btn-reset-xp" title="Réinitialiser ma progression">↺</button>
+      <button class="sound-toggle" id="sound-toggle" title="Son activé/désactivé">🔔</button>
+    </div>
+    <div style="display:flex; gap:0.5rem;">
+      <button class="btn-back" id="btn-back" style="display:none" aria-label="Retour">⬅ Retour</button>
+      <button class="btn-reset" id="btn-reset" style="display:none" aria-label="Accueil">🏠 Accueil</button>
+    </div>
+  </div>
+</header>
+
+<main class="app-main">
+
+  <!-- ÉTAPE 0 : Accueil -->
+  <section class="step-section active" id="step-welcome" aria-label="Accueil">
+    <div class="hero-container">
+      <div class="hero-badge">Lycée Professionnel</div>
+      <!-- Hero card (si pseudo connu) -->
+      <div id="hero-card-wrap"></div>
+      <h1 class="hero-title">Maîtrise tes <span class="gradient-text">automatismes</span> mathématiques</h1>
+      <p class="hero-sub">75+ exercices générés aléatoirement · CAP &amp; BAC PRO · Feedback instantané</p>
+      <button class="btn-primary" id="btn-start">Commencer à pratiquer</button>
+      <div style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-top:1rem;">
+        <button class="btn-lesson-skip" id="btn-show-stats" style="border: 1px solid rgba(255,255,255,0.1); padding: 0.8rem 1.5rem;">📊 Mon Profil</button>
+        <button class="btn-lesson-skip" id="btn-show-shop" style="border: 1px solid rgba(255,255,255,0.1); padding: 0.8rem 1.5rem;">💎 Boutique</button>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item"><span class="stat-num">75+</span><span class="stat-label">exercices</span></div>
+        <div class="stat-item"><span class="stat-num">5</span><span class="stat-label">niveaux</span></div>
+        <div class="stat-item"><span class="stat-num" id="stat-sessions">0</span><span class="stat-label">sessions</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ÉTAPE 0.5 : Tableau de bord -->
+  <section class="step-section" id="step-stats" aria-label="Tableau de bord">
+    <div class="section-header">
+      <h2 class="section-title">Mon <strong>Profil</strong></h2>
+      <p class="section-sub">Statistiques et sauvegarde</p>
+    </div>
+    <div class="stats-container">
+      <div class="stats-actions" style="display:flex; gap:1rem; justify-content:center; margin-bottom:2rem;">
+        <button class="btn-primary" id="btn-export-save">📥 Exporter ma sauvegarde</button>
+        <button class="btn-lesson-skip" id="btn-import-save" style="border: 1px solid rgba(255,255,255,0.1);">📤 Importer</button>
+      </div>
+      <div class="stats-grid" id="stats-grid" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:1rem; padding:1rem; max-width:800px; margin:0 auto;">
+        <!-- Les stats seront injectées ici par le JS -->
+      </div>
+      
+      <h3 style="text-align:center; margin-top:3rem; margin-bottom:1rem; font-size:1.8rem; color:var(--accent1);">Vitrine de Trophées</h3>
+      <div class="trophies-grid" id="trophies-grid" style="display:flex; flex-wrap:wrap; justify-content:center; gap:1.5rem; padding:1rem; max-width:900px; margin:0 auto;">
+        <!-- Injecté par JS -->
+      </div>
+      
+      <div style="text-align:center; margin-top:2rem;">
+        <button class="btn-secondary" id="btn-stats-back">Retour à l'accueil</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ÉTAPE 0.6 : Boutique -->
+  <section class="step-section" id="step-shop" aria-label="Boutique">
+    <div class="section-header">
+      <h2 class="section-title">Boutique de <strong>Cosmétiques</strong></h2>
+      <p class="section-sub">Dépense tes cristaux pour personnaliser ton profil</p>
+    </div>
+    <div class="stats-container">
+      <div style="text-align:center; margin-bottom:2rem; font-size:1.5rem;">
+        Cristaux disponibles : <span id="shop-coins-display" style="font-weight:bold; color:var(--accent1);">0 💎</span>
+      </div>
+      <div class="shop-grid" id="shop-grid" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:1rem; padding:1rem; max-width:900px; margin:0 auto;">
+        <!-- Injecté par JS -->
+      </div>
+      <div style="text-align:center; margin-top:2rem;">
+        <button class="btn-secondary" id="btn-shop-back">Retour à l'accueil</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ÉTAPE 1 : Sélection du diplôme -->
+  <section class="step-section" id="step-level" aria-label="Sélection du niveau">
+    <div class="section-header">
+      <h2 class="section-title">Choisis ton <strong>diplôme</strong></h2>
+      <p class="section-sub">Sélectionne ton niveau pour accéder aux automatismes adaptés</p>
+    </div>
+    <div class="diploma-grid" id="diploma-grid" role="group" aria-label="Choix du diplôme">
+      <div class="diploma-card" id="diploma-cap" data-diploma="CAP" role="button" tabindex="0" aria-pressed="false">
+        <div class="diploma-icon">🎓</div>
+        <div class="diploma-name">CAP</div>
+        <div class="diploma-desc">Certificat d'Aptitude Professionnelle</div>
+        <div class="diploma-years">C1 · C2</div>
+      </div>
+      <div class="diploma-card" id="diploma-bac" data-diploma="BAC PRO" role="button" tabindex="0" aria-pressed="false">
+        <div class="diploma-icon">🏆</div>
+        <div class="diploma-name">BAC PRO</div>
+        <div class="diploma-desc">Baccalauréat Professionnel</div>
+        <div class="diploma-years">2nde · 1ère · Terminale</div>
+      </div>
+    </div>
+    <div class="year-selection" id="year-selection" style="display:none">
+      <h3 class="year-title">Choisis ton <strong>année</strong></h3>
+      <div class="year-grid" id="year-grid" role="group" aria-label="Sélection de l'année"></div>
+    </div>
+  </section>
+
+  <!-- ÉTAPE 2 : Sélection de l'automatisme -->
+  <section class="step-section" id="step-automatism" aria-label="Sélection de l'automatisme">
+    <div class="section-header">
+      <h2 class="section-title">Choisis un <strong>automatisme</strong></h2>
+      <p class="section-sub">Sélectionne le thème que tu veux travailler</p>
+    </div>
+    <div class="automatism-grid" id="automatism-grid" role="group" aria-label="Liste des automatismes"></div>
+  </section>
+
+  <!-- ÉTAPE 2b : Rappel de cours -->
+  <section class="step-section" id="step-lesson" aria-label="Rappel de cours">
+    <div class="lesson-card">
+      <div class="lesson-header">
+        <span class="lesson-icon" id="lesson-icon">📖</span>
+        <h2 class="lesson-title" id="lesson-title">Rappel rapide</h2>
+      </div>
+      <ul class="lesson-rules" id="lesson-rules"></ul>
+      <div class="lesson-examples" id="lesson-examples"></div>
+      <div class="lesson-actions">
+        <button class="btn-primary" id="btn-lesson-start">C'est parti ! ▶</button>
+        <button class="btn-lesson-skip" id="btn-lesson-skip">Passer →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ÉTAPE 3 : Exercices -->
+  <section class="step-section" id="step-exercises" aria-label="Exercices">
+    <!-- Bandeau thème -->
+    <div class="theme-banner" id="theme-banner">
+      <span class="theme-emoji" id="theme-banner-emoji">✨</span>
+      <div>
+        <div class="theme-text">Automatisme en cours</div>
+        <div class="theme-name" id="theme-banner-name">—</div>
+      </div>
+    </div>
+    <div class="exercise-header">
+      <div class="exercise-meta" id="exercise-meta"></div>
+      <!-- Timer zone -->
+      <div class="timer-zone">
+        <button class="timer-toggle" id="timer-toggle" title="Chronomètre">⏱</button>
+        <button class="timer-toggle" id="btn-scratchpad-toggle" title="Brouillon (Dessin)">🖊️</button>
+        <button class="timer-toggle" id="btn-print-pdf" title="Générer Fiche PDF (Professeur)">🖨️</button>
+        <span class="timer-display" id="timer-display">3:00</span>
+      </div>
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+    </div>
+    <div class="exercises-list" id="exercises-list"></div>
+    <div class="exercise-actions">
+      <button class="btn-primary" id="btn-submit">Vérifier mes réponses</button>
+    </div>
+  </section>
+
+  <!-- ÉTAPE 4 : Résultats -->
+  <section class="step-section" id="step-results" aria-label="Résultats">
+    <div class="results-container">
+      <div class="score-display" id="score-display"></div>
+      <div class="results-feedback" id="results-feedback"></div>
+      <div class="results-actions">
+        <button class="btn-secondary" id="btn-retry-same">↩ Réessayer</button>
+        <button class="btn-secondary" id="btn-change-auto">⚙ Autre automatisme</button>
+        <button class="btn-primary"   id="btn-home">🏠 Accueil</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- BROUILLON NUMÉRIQUE (Scratchpad) -->
+<canvas id="scratchpad-canvas" class="scratchpad-canvas"></canvas>
+<div class="scratchpad-tools" id="scratchpad-tools">
+  <button class="btn-secondary" id="btn-scratchpad-clear">🗑️ Effacer</button>
+  <button class="btn-primary" id="btn-scratchpad-close">Fermer Brouillon</button>
+</div>
+
+<!-- PIED DE PAGE -->
+<footer class="app-footer">
+  <div class="footer-content">
+    <span class="version-badge">v1.4.0</span>
+    <span class="creator-name">Créé par Dodeman Julien</span>
+  </div>
+</footer>
+
+<!-- SCRIPTS (même ordre que build.ps1) -->
+<script src="theme_assets.js"></script>
+<script src="lesson-hints.js"></script>
+<script src="gamification.js"></script>
+<script src="minigame.js"></script>
+<script src="gen-cap-c1.js"></script>
+<script src="gen-cap-c2.js"></script>
+<script src="gen-bac2nde.js"></script>
+<script src="gen-bac1ere.js"></script>
+<script src="gen-bac-term.js"></script>
+<script src="curriculum.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
